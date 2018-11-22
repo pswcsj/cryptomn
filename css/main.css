@@ -1,0 +1,175 @@
+@font-face {
+  font-family:"futura";
+  src: url('../fonts/Futura Heavy font.ttf');
+
+}
+@font-face {
+  font-family:"futura l";
+  src: url('../fonts/futura light bt.ttf');
+}
+@font-face {
+  font-family:"futura m";
+  src: url('../fonts/futura medium bt.ttf');
+}
+@font-face {
+  font-family:"NanumB";
+  src: url('../fonts/NanumSquareR.ttf')
+}
+a {
+  font-family: futura;
+  visibility: hidden;
+}
+h1{
+  font-size: 30px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 300;
+  text-align: center;
+}
+html {
+  width:100%;
+  height:100%;
+}
+body {
+  /*
+  초록
+  background-color:rgb(223,236,198);
+  */
+  background-color:#f6f6f7;
+  font-family: 'Roboto', sans-serif;
+  height:100%;
+  margin-top:0;
+}
+th{
+  background-color:#a298a963;
+  border-right:solid 1px rgba(255,255,255,0.1);
+  width:16.66%;
+  padding: 20px 15px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 12px;
+  color: black;
+  text-transform: uppercase;
+  font-family:NanumB;
+}
+table{
+  width: 100%;
+}
+td{
+  width:16.66%;
+  padding: 15px;
+  text-align: center;
+  vertical-align:middle;
+  font-weight: 300;
+  font-size: 12px;
+  color: black;
+  border-bottom: solid 1px rgba(255,255,255,0.1);
+  border-right:solid 1px rgba(255,255,255,0.1);
+  font-family:NanumB;
+}
+label{
+  font-family:NanumB;
+}
+#chart {
+  overflow-x: auto;
+  float:left;
+  width:49%;
+  height:92.5%;
+}
+#function {
+  float:right;
+  width:50%;
+  height:90%;
+}
+#tutorial {
+  visibility: hidden;
+}
+#check {
+  position:relative;
+  border: 1px solid rgba(255,255,255,0.3);
+  margin-top:5%;
+  height:38%;
+  width : 100%;
+}
+#excel {
+  height:50%;
+  overflow-x:auto;
+  margin-top: 0px;
+  border: 1px solid rgba(255,255,255,0.3);
+  width : 99.7%;
+}
+#tableh {
+  width:100%;
+  background-color: rgba(255,255,255,0.3);
+}
+#title {
+  height:20%;
+}
+#chart1 {
+  width:100%;
+  height:80%;
+  border-bottom: 40px solid #a5a191;
+}
+#chart2 {
+  width:100%;
+  height:80%;
+  border-bottom: 40px solid #C0C0C0;
+}
+#chart3 {
+  width:100%;
+  height:80%;
+  border-bottom: 40px solid #ac88bb;
+}
+#percent {
+  width:16%;
+}
+#result {
+  float:right;
+  width:20%;
+  height:100%;
+  text-align: center;
+  vertical-align:middle;
+  display:table-cell;
+
+}
+
+.alarm {
+  visibility: hidden
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+::-webkit-scrollbar-thumb {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+*, ::after, ::before {
+  font-family:futura l;
+}
+.navbar-brand{
+  margin:0;
+}
+.input-group{
+  width:90%;
+  font-family:NanumB
+}
+.input-group-text{
+  font-family:NanumB
+}
+.ctitle{
+  font-family:futura
+}
+.goldenchk{
+  font-size:2px
+}
+.rightchk{
+  font-size:2px
+}
+.bg-coinone{
+  background-color:#593ec2
+}
+.input-group-text{
+  background-color:rgba(130, 147, 210, 0.47);
+}

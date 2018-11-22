@@ -1,0 +1,2346 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
+    <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+    <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+    <script src="https://www.amcharts.com/lib/3/amstock.js"></script>
+    <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+    <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+  </head>
+  <body data-spy="scroll" data-target=".navbar" data-offset="50">
+    <nav class="navbar navbar-expend-sm bg-coinone navbar-dark">
+      <div style="width:40%">
+        <a style="visibility:visible" class="navbar-brand" href="index.html">Cryptocurrency</a>
+      </div>
+      <button  type="button" class="btn btn-primary alarm" data-toggle="modal" data-target="#myModal">
+        Open modal
+      </button>
+      <div class="d-flex justify-content-end">
+        <div style="font-family:NanumB" class="navbar-text">
+          초기 자금:
+        </div>
+        <div style="font-family:NanumB" class="navbar-text firstmoney mr-3">
+          10,000&#8361;
+        </div>
+        <div style="font-family:NanumB" class="navbar-text">
+          최종 자금:
+        </div>
+        <div style="font-family:NanumB" class="navbar-text gottenmoney mr-3">
+          0
+        </div>
+        <div style="font-family:NanumB" class="navbar-text">
+          수익률:
+        </div>
+        <div style="font-family:NanumB" class="navbar-text percent mr-3">
+          0%
+        </div>
+      </div>
+    </nav>
+    <div id="chart">
+      <div style="z-index:1200; width:49%; height:92.5%; position:absolute; background-color:rgba(0, 0, 0, 0.2); font-family:Futura" id="loading">
+        <container>
+          <div class="progress" style="height:1%">
+            <div class="progress-bar progress-bar-animated" style="width:0%"></div>
+          </div>
+        </container>
+      </div>
+      <div id="chart1">
+      </div>
+      <div id="chart2">
+      </div>
+      <div id="chart3">
+      </div>
+    </div>
+    <div id="function">
+      <div id="tableh">
+        <table cellpadding="0" cellspacing="0" border="0">
+          <thead>
+            <tr>
+              <th>날짜</th>
+              <th>코인명</th>
+              <th>구분</th>
+              <th>현금</th>
+              <th>코인</th>
+              <th>수익</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <div id="excel">
+        <table cellpadding="0" cellspacing="0" border="0">
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <div id="check" class="d-flex">
+        <div id="tutorial" style="width:100%; height:100%; position:absolute; top:0; z-index:1;">
+
+        </div>
+        <div style="width:50%;">
+          <div class="input-group sm-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">단기평균선</span>
+            </div>
+            <input type="text" class="form-control" data-toggle="tooltip" title="단기평균선 일 수를 적어주세요" data-placement="top" placeholder="기본) 5">
+            <div class="input-group-prepend">
+              <span class="input-group-text">일</span>
+            </div>
+          </div>
+          <div class="input-group sm-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">중기평균선</span>
+            </div>
+            <input type="text" class="form-control" data-toggle="tooltip" title="중기평균선 일 수를 적어주세요" data-placement="top" placeholder="기본) 45">
+            <div class="input-group-prepend">
+              <span class="input-group-text">일</span>
+            </div>
+          </div>
+          <div class="input-group sm-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">장기평균선</span>
+            </div>
+            <input type="text" class="form-control" data-toggle="tooltip" title="장기평균선 일 수를 적어주세요" data-placement="top" placeholder="기본) 125">
+            <div class="input-group-prepend">
+              <span class="input-group-text">일</span>
+            </div>
+          </div>
+          <div class="d-flex mt-3" style="width:200%; position: relative;">
+            <div class="input-group mr-3 mt-3" style="width:35%; height:10%;">
+              <div class="input-group-prepend">
+                <span class="input-group-text">초기 자금</span>
+              </div>
+              <input type="text" class="form-control" data-toggle="tooltip" title="초기 자본을 적어주세요" data-placement="top" placeholder="기본) 10,000">
+              <div class="input-group-prepend">
+                <span class="input-group-text">&#8361;</span>
+              </div>
+            </div><!--스크롤파이 위치-->
+              <div>
+                <div class="custom-control custom-checkbox mb-3" style= "font-family: NanumB; font-size:15px;">
+                  <input class="custom-control-input" type="checkbox" class="goldenchk" id="customCheck" checked/>
+                  <label class="custom-control-label" for="customCheck" data-toggle="tooltip" title="단기이동평균선이 중기이동평균선을 돌파시 매수하는 기능입니다" data-placement="top" class="badge badge-secondary">골든크로스</label>
+                </div>
+                <div class="custom-control custom-checkbox mb-3" >
+                  <input class="custom-control-input" type="checkbox" class="rightchk" id="customChec" checked/>
+                  <label class="custom-control-label" for="customChec" style= "font-family: NanumB; font-size:15px;" data-toggle="tooltip" title="이평선이 위로부터 단기,중기,장기 순서로 배열되었을 시 강력한 매수 신호를 발생합니다." data-placement="top" class="badge badge-secondary">정배열</label>
+                </div>
+                <div class="custom-control custom-checkbox mb-3" >
+                  <input class="custom-control-input" type="checkbox" class="rightchk" id="volumech" checked/>
+                  <label class="custom-control-label" for="volumech" style= "font-family: NanumB; font-size:15px;" data-toggle="tooltip" title="위의 골든크로스를 거래량에 적용한 것으로 단기이평선이 장기이평선을 돌파시 매수하는 기능입니다." data-placement="top" class="badge badge-secondary">거래량 골든크로스</label>
+                </div>
+              </div>
+              <div style="margin-left:5px;">
+                <div class="custom-control custom-checkbox mb-3" style= "font-family: NanumB; font-size:15px;">
+                  <input class="custom-control-input" type="checkbox" class="goldenchk" id="deadcross" checked/>
+                  <label class="custom-control-label" for="deadcross"  data-toggle="tooltip" title="중기평균선이 단기평균선을 돌파시 매도하는 기능입니다" data-placement="top" class="badge badge-secondary">데드크로스</label>
+                </div>
+                <div class="custom-control custom-checkbox mb-3" >
+                  <input class="custom-control-input" type="checkbox" class="rightchk" id="unrightavg" checked/>
+                  <label class="custom-control-label" for="unrightavg" style= "font-family: NanumB; font-size:15px;"  data-toggle="tooltip" title="정배열과는 반대로 위로부터 장기, 중기, 단기 순서로 배열되었을 때 강력한 매도 신호를 발생합니다." data-placement="top" class="badge badge-secondary">역배열</label>
+                </div>
+                <div class="custom-control custom-checkbox mb-3" >
+                  <input class="custom-control-input" type="checkbox" class="rightchk" id="volumeunch" checked/>
+                  <label class="custom-control-label" for="volumeunch" style= "font-family: NanumB; font-size:15px;" data-toggle="tooltip" title="위의 데드크로스를 거래량에 적용한 것으로 거래량 중기평균선이 단기평균선을 돌파시 매도하는 기능입니다." data-placement="top" class="badge badge-secondary">거래량 데드크로스</label>
+                </div>
+              </div>
+              <div style="margin-left:5px;">
+                <div class="custom-control custom-checkbox mb-3" style= "font-family: NanumB; font-size:15px;">
+                  <input class="custom-control-input" type="checkbox" class="goldenchk" id="avgline"/>
+                  <label class="custom-control-label" for="avgline" data-toggle="tooltip" title="평균선의 기울기가 특정 기울기에 못미치면 구매하지 않는 기능입니다." data-placement="top" class="badge badge-secondary">평균선 기울기 제한 </label>
+                </div>
+                <div class="custom-control custom-checkbox mb-3" style= "font-family: NanumB; font-size:15px;">
+                  <input class="custom-control-input" type="checkbox" class="goldenchk" id="hammer" checked/>
+                  <label class="custom-control-label" for="hammer" data-toggle="tooltip" title="망치형 캔들은 캔들의 한 종류로서 매수 신호이다" data-placement="top" class="badge badge-secondary">망치형 캔들 출몰 시 구매</label>
+                </div>
+                <div class="custom-control custom-checkbox mb-3" style= "font-family: NanumB; font-size:15px;">
+                  <input class="custom-control-input" type="checkbox" class="goldenchk" id="hanger" checked/>
+                  <label class="custom-control-label" for="hanger" data-toggle="tooltip" title="교수형 캔들은 캔들의 한 종류로써 매도 신호이다" data-placement="bottom" class="badge badge-secondary">교수형 캔들 출몰 시 판매</label>
+                </div>
+              </div>
+              <button style="left:0; bottom:0; position:absolute" class="btn btn-primary" onclick="changelo();" style= "font-family: NanumB">시작</button>
+          </div>
+
+        </div>
+        <div style="width:50%;">
+          <div class="input-group sm-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">구매시 평균선 기울기 제한</span>
+            </div>
+            <input type="text" class="form-control" data-toggle="tooltip" title="최소 기울기 값을 입력하세요" data-placement="top" placeholder="기본) 0">
+            <div class="input-group-prepend">
+            </div>
+            <div class="input-group-prepend">
+              <span class="input-group-text">부터</span>
+            </div>
+          </div>
+          <div class="input-group sm-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">거래량 단기 평균선</span>
+            </div>
+            <input type="text" class="form-control" data-toggle="tooltip" title="교체할 거래량 단기 평균선 일수를 적어주세요" data-placement="top" placeholder="기본) 5">
+            <div class="input-group-prepend">
+            </div>
+            <div class="input-group-prepend">
+              <span class="input-group-text">일</span>
+            </div>
+        </div>
+        <div class="input-group sm-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">거래량 중기 평균선</span>
+          </div>
+          <input type="text" class="form-control" data-toggle="tooltip" title="교체할 거래량 중기 평균선 일수를 적어주세요" data-placement="top" placeholder="기본) 45">
+          <div class="input-group-prepend">
+          </div>
+          <div class="input-group-prepend">
+            <span class="input-group-text">일</span>
+          </div>
+      </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="myModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Information</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            설정값들을 적으신 후에 시작 버튼을 누르시면 실행이됩니다.   (적지 않으면 기본값으로 적용이 됩니다.)
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-dismiss="modal">닫기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      var pricenum =[]; //보유 금액들을 담는 배열
+      //각 코인의 정보를 담는 배열
+      var a = []; //이더리움 코인 정보를 담는 배열
+      var b = [];//라이트 코인 정보를 담는 배열
+      var c = []; //어거 코인 정보를 담는 배열
+
+      //기능이 체크되었는지 확인하는 변수
+      var riched = true, //정배열
+      goched = true, //골든크로스
+      unriched = true, //역배열
+      deched = true, //데드크로스
+      avglied = true, //평균선 기울기에 따라 구매 제한
+      volumed = true, //거래량 골든크로스
+      unvolumed = true, //거래량 데드크로스
+      hammerd = true, //망치형 캔들 출몰 시 구매
+      hangerd = true, //교수형 캔들 출몰 시 판매
+      mineth = Number.MAX_SAFE_INTEGER,
+      maxeth = -Number.MAX_SAFE_INTEGER;
+      //날짜 형식 가공 함수
+      function timenow(a) {
+        now = new Date(a * 1000);
+        return now;
+      }
+
+      //로딩 함수
+      function changelo(){
+        document.getElementById("loading").style.visibility="visible";
+        move()
+        setTimeout(fnccheck,1000);
+      }
+
+      //로딩 함수 2단계
+      function move() {
+        var elem = document.getElementsByClassName("progress-bar")[0];
+        elem.style.width=0;
+        var width = 0;
+        var id = setInterval(frame, 20);
+        function frame() {
+          if (width >= 100) {
+            clearInterval(id);
+          } else {
+            width+=1;
+            elem.style.width = width + '%';
+          }
+        }
+      }
+      move()
+      function endload() {
+        document.getElementById("loading").style.visibility="hidden"
+        document.getElementsByClassName("alarm")[0].click()
+        chart3.removeListener(chart3,'drawn', endload)
+      }
+      function endload2() {
+        document.getElementById("loading").style.visibility="hidden"
+        chart3.removeListener(chart3,'drawn', endload)
+      }
+      //
+      function fnccheck(){
+        var rightloc = document.getElementById('customChec'),
+        goldenloc = document.getElementById('customCheck'),
+        deadloc = document.getElementById('deadcross'),
+        unrightloc = document.getElementById('unrightavg'),
+        avglineloc = document.getElementById('avgline'),
+        volumechloc = document.getElementById('volumech'),
+        volumeunchloc = document.getElementById('volumeunch'),
+        hammerloc = document.getElementById('hammer'),
+        hangerloc = document.getElementById('hanger');
+        chart3.addListener('drawn', endload2)
+        if(goldenloc.checked) {
+          goched = true;
+          chart.panels[0].stockGraphs[1].bulletColor = "#f70000"
+          chart.panels[0].stockGraphs[1].bulletColorR = "#f70000"
+          chart2.panels[0].stockGraphs[1].bulletColor = "#f70000"
+          chart2.panels[0].stockGraphs[1].bulletColorR = "#f70000"
+          chart3.panels[0].stockGraphs[1].bulletColor = "#f70000"
+          chart3.panels[0].stockGraphs[1].bulletColorR = "#f70000"
+        }
+        else if(goldenloc.checked == false){
+          goched = false;
+          chart.panels[0].stockGraphs[1].bulletColor = "transparent"
+          chart.panels[0].stockGraphs[1].bulletColorR = "transparent"
+          chart2.panels[0].stockGraphs[1].bulletColor = "transparent"
+          chart2.panels[0].stockGraphs[1].bulletColorR = "transparent"
+          chart3.panels[0].stockGraphs[1].bulletColor = "transparent"
+          chart3.panels[0].stockGraphs[1].bulletColorrR = "transparent"
+        }
+        if(rightloc.checked) {
+          riched = true;
+          chart.panels[0].stockGraphs[6].bulletColor = "#2d962a"
+          chart.panels[0].stockGraphs[6].bulletColorR = "#2d962a"
+          chart2.panels[0].stockGraphs[6].bulletColor = "#2d962a"
+          chart2.panels[0].stockGraphs[6].bulletColorR = "#2d962a"
+          chart3.panels[0].stockGraphs[6].bulletColor = "#2d962a"
+          chart3.panels[0].stockGraphs[6].bulletColorR = "#2d962a"
+        }
+        else if(rightloc.checked == false){
+          riched = false;
+          chart.panels[0].stockGraphs[6].bulletColor = "transparent"
+          chart.panels[0].stockGraphs[6].bulletColorR = "transparent"
+          chart2.panels[0].stockGraphs[6].bulletColor = "transparent"
+          chart2.panels[0].stockGraphs[6].bulletColorR = "transparent"
+          chart3.panels[0].stockGraphs[6].bulletColor = "transparent"
+          chart3.panels[0].stockGraphs[6].bulletColorR = "transparent"
+        }
+        if(deadloc.checked){
+          deched = true;
+          chart.panels[0].stockGraphs[2].bulletColor = "#0018f7"
+          chart.panels[0].stockGraphs[2].bulletColorR = "#0018f7"
+          chart2.panels[0].stockGraphs[2].bulletColor = "#0018f7"
+          chart2.panels[0].stockGraphs[2].bulletColorR = "#0018f7"
+          chart3.panels[0].stockGraphs[2].bulletColor = "#0018f7"
+          chart3.panels[0].stockGraphs[2].bulletColorR = "#0018f7"
+
+        }
+        else if(deadloc.checked == false){
+          deched = false;
+          chart.panels[0].stockGraphs[2].bulletColor = "transparent"
+          chart.panels[0].stockGraphs[2].bulletColorR = "transparent"
+          chart2.panels[0].stockGraphs[2].bulletColor = "transparent"
+          chart2.panels[0].stockGraphs[2].bulletColorR = "transparent"
+          chart3.panels[0].stockGraphs[2].bulletColor = "transparent"
+          chart3.panels[0].stockGraphs[2].bulletColorR = "transparent"
+        }
+        if(unrightloc.checked){
+          unriched = true;
+          chart.panels[0].stockGraphs[7].bulletColor = "#702a96"
+          chart.panels[0].stockGraphs[7].bulletColorR = "#702a96"
+          chart2.panels[0].stockGraphs[7].bulletColor = "#702a96"
+          chart2.panels[0].stockGraphs[7].bulletColorR = "#702a96"
+          chart3.panels[0].stockGraphs[7].bulletColor = "#702a96"
+          chart3.panels[0].stockGraphs[7].bulletColorR = "#702a96"
+        }
+        else if(unrightloc.checked == false){
+          unriched = false;
+          chart.panels[0].stockGraphs[7].bulletColor = "#transparent"
+          chart.panels[0].stockGraphs[7].bulletColorR = "#transparent"
+          chart2.panels[0].stockGraphs[7].bulletColor = "#transparent"
+          chart2.panels[0].stockGraphs[7].bulletColorR = "#transparent"
+          chart3.panels[0].stockGraphs[7].bulletColor = "#transparent"
+          chart3.panels[0].stockGraphs[7].bulletColorR = "#transparent"
+        }
+        if(avglineloc.checked){
+          avglied = true;
+        }
+        else if(avglineloc.checked == false){
+          avglied = false;
+        }
+        if(volumechloc.checked){
+          volumed = true;
+        }
+        else if(volumechloc.checked == false){
+          volumed = false;
+        }
+        if(volumeunchloc.checked){
+          unvolumed = true;
+        }
+        else if(volumeunchloc.checked == false){
+          unvolumed = false;
+        }
+        if(hammerloc.checked){
+          hammerd = true
+        }
+        else if(hammerloc.checked == false){
+          hammerd = false
+        }
+        if(hangerloc.checked){
+          hangerd = true
+        }
+        else if(hangerloc.checked == false){
+          hangerd = false
+        }
+        //
+        for(var j = 1; j < trnum; j++){
+          document.getElementsByTagName("table")[1].deleteRow(0);
+        }
+        trnum = 1
+        var tbody = document.getElementsByTagName("tbody")[0];
+        var ethcoin = 0;
+        var ltccoin = 0;
+        var repcoin = 0;
+        money = 10000;
+        var k=0
+
+        //세팅한 값을 받아온 변수들
+        var savg=parseInt(document.getElementsByClassName("form-control")[0].value),//단기 이동평균선 일수
+        mhavg=parseInt(document.getElementsByClassName("form-control")[1].value),//중기 이동평균선 일수
+        lavg=parseInt(document.getElementsByClassName("form-control")[2].value),//장기 이동평균선 일수
+        firstmoney=parseInt(document.getElementsByClassName("form-control")[3].value),//초기 자금 비용
+        avglen=parseInt(document.getElementsByClassName("form-control")[4].value),//제안할 이동선 기울기 값
+        volumeles=parseInt(document.getElementsByClassName("form-control")[5].value),//단기 거래량 이동평균선
+        volumelem=parseInt(document.getElementsByClassName("form-control")[6].value);//중장기 거래량 이동평균선
+        if(isNaN(savg)) {
+          savg=5
+        }
+        if(isNaN(mhavg)) {
+          mhavg=45
+        }
+        if(isNaN(lavg)) {
+          lavg=125
+        }
+        if(isNaN(avglen)) {
+          avglen = 0
+        }
+        if(isNaN(volumeles)) {
+          volumeles=5
+        }
+        if(isNaN(volumelem)) {
+          volumelem=45
+        }
+        if(isNaN(firstmoney)) {
+          firstmoney=10000
+          money=firstmoney
+        }
+        else if(!(isNaN(firstmoney))){
+          money=firstmoney
+        }
+
+        //
+        if(avglied == false) {
+          avglen = -99999
+        }
+
+        //이더리움을 판매하는 함수
+        function ethsell(pe) {
+          money += eth[i].close * ethcoin*pe;
+          ethcoin -= ethcoin*pe;
+          pricenum[k]=money + rep[i].close * repcoin + ltc[i].close * ltccoin + eth[i].close * ethcoin
+          var newtr = document.createElement("tr");
+          var newtd = document.createElement("td");
+          tbody.appendChild(newtr);
+          newtd.innerHTML= new Date(eth[i].date*1000).toLocaleString()
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= "이더리움";
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= "판매";
+          newtd.style.color="blue";
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= money.toFixed(1);
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= ethcoin.toFixed(1);
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          if(k > 0) {
+            newtd.innerHTML=((pricenum[k]-pricenum[k-1])/pricenum[k]*100).toFixed(1)+"%";
+            if(((pricenum[k]-pricenum[k-1])/pricenum[k]*100).toFixed(1)>0) {
+              newtd.style.color="red";
+            }
+            else {
+              newtd.style.color="blue";
+            }
+          }
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          newtd.setAttribute("id", "percent");
+          trnum++;
+          k++
+        }
+
+        //이더리움 코인을 구매하는 함수
+        function ethbuy(pe) {
+          ethcoin += money*pe / eth[i].close
+          money -= pe*money;
+          pricenum[k]=money + rep[i].close * repcoin + ltc[i].close * ltccoin + eth[i].close * ethcoin
+          var newtr = document.createElement("tr");
+          var newtd = document.createElement("td");
+          tbody.appendChild(newtr);
+          newtd.innerHTML= new Date(eth[i].date*1000).toLocaleString()
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= "이더리움";
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= "구매";
+          newtd.style.color="red";
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= money.toFixed(1);
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= ethcoin.toFixed(1);
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          if(k > 0) {
+            newtd.innerHTML="-";
+          }
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          newtd.setAttribute("id", "percent");
+          trnum++;
+          k++
+        }
+
+        //라이트코인을 판매하는 함수
+        function ltcsell(pe) {
+          money += ltc[i].close * ltccoin * pe;
+          ltccoin -= ltccoin*pe;
+          pricenum[k]=money + rep[i].close * repcoin + ltc[i].close * ltccoin + eth[i].close * ethcoin
+          var newtr = document.createElement("tr");
+          var newtd = document.createElement("td");
+          tbody.appendChild(newtr);
+          newtd.innerHTML= new Date(eth[i].date*1000).toLocaleString()
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= "라이트코인";
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= "판매";
+          newtd.style.color="blue";
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= money.toFixed(1);
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= ltccoin.toFixed(1);
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          if(k > 0) {
+            newtd.innerHTML=((pricenum[k]-pricenum[k-1])/pricenum[k]*100).toFixed(1)+"%";
+            if(((pricenum[k]-pricenum[k-1])/pricenum[k]*100).toFixed(1)>0) {
+              newtd.style.color="red";
+            }
+            else {
+              newtd.style.color="blue";
+            }
+          }
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          newtd.setAttribute("id", "percent");
+          trnum++;
+          k++
+        }
+
+        //라이트코인을 구매하는 함수
+        function ltcbuy(pe) {
+          ltccoin += money*pe / ltc[i].close
+          money -= pe*money;
+          pricenum[k]=money + rep[i].close * repcoin + ltc[i].close * ltccoin + eth[i].close * ethcoin
+          var newtr = document.createElement("tr");
+          var newtd = document.createElement("td");
+          tbody.appendChild(newtr);
+          newtd.innerHTML= new Date(eth[i].date*1000).toLocaleString()
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= "라이트코인";
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= "구매";
+          newtd.style.color="red";
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= money.toFixed(1);
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= ltccoin.toFixed(1);
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          if(k > 0) {
+            newtd.innerHTML="-";
+          }
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          newtd.setAttribute("id", "percent");
+          trnum++;
+          k++
+        }
+
+        //어거코인을 판매하는 함수
+        function repsell(pe) {
+          money += rep[i].close * repcoin * pe;
+          repcoin -= pe*repcoin;
+          pricenum[k]=money + rep[i].close * repcoin + ltc[i].close * ltccoin + eth[i].close * ethcoin
+          var newtr = document.createElement("tr");
+          var newtd = document.createElement("td");
+          tbody.appendChild(newtr);
+          newtd.innerHTML= new Date(eth[i].date*1000).toLocaleString()
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= "어거 코인";
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= "판매";
+          newtd.style.color="blue";
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= money.toFixed(1);
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= repcoin.toFixed(1);
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          if(k > 0) {
+            newtd.innerHTML=((pricenum[k]-pricenum[k-1])/pricenum[k]*100).toFixed(1)+"%";
+            if(((pricenum[k]-pricenum[k-1])/pricenum[k]*100).toFixed(1)>0) {
+              newtd.style.color="red";
+            }
+            else {
+              newtd.style.color="blue";
+            }
+          }
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          newtd.setAttribute("id", "percent");
+          trnum++;
+          k++
+        }
+
+        //어거코인을 구매하는 함수
+        function repbuy(pe) {
+          repcoin += money*pe / rep[i].close
+          money -= pe*money;
+          pricenum[k]=money + rep[i].close * repcoin + ltc[i].close * ltccoin + eth[i].close * ethcoin
+          var newtr = document.createElement("tr");
+          var newtd = document.createElement("td");
+          tbody.appendChild(newtr);
+          newtd.innerHTML= new Date(eth[i].date*1000).toLocaleString()
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= "어거 코인";
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= "구매";
+          newtd.style.color="red";
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= money.toFixed(1);
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          newtd.innerHTML= repcoin.toFixed(1);
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          var newtd = document.createElement("td");
+          if(k > 0) {
+            newtd.innerHTML="-";
+          }
+          document.getElementsByTagName("tr")[trnum].appendChild(newtd);
+          newtd.setAttribute("id", "percent");
+          trnum++;
+          k++
+        }
+        for (var i = 0; i < rep.length; i++) {
+          a[i] = {
+            date: timenow(eth[i].date),
+            high: eth[i].high,
+            low: eth[i].low,
+            open: eth[i].open,
+            close: eth[i].close,
+            volume: eth[i].volume,
+            volumeavg:NaN,
+            volumeunavg: NaN,
+            volumes:0,
+            volumefif:0,
+            avg: 0,
+            avgfif: 0,
+            avgolden: NaN,
+            avot: 0,
+            avgdead: NaN,
+            avgright: NaN,
+            avgunright: NaN,
+            hammer:NaN,
+            hanger:NaN,
+            golpo:0,
+            depo:0
+          }
+          b[i] = {
+            date: timenow(ltc[i].date),
+            high: ltc[i].high,
+            low: ltc[i].low,
+            open: ltc[i].open,
+            close: ltc[i].close,
+            volume: ltc[i].volume,
+            volumeavg:NaN,
+            volumeunavg: NaN,
+            volumes:0,
+            volumefif:0,
+            avg: 0,
+            avgfif: 0,
+            avgolden: NaN,
+            avot: 0,
+            avgdead: NaN,
+            avgright: NaN,
+            avgunright: NaN,
+            hammer:NaN,
+            hanger:NaN,
+            golpo:0,
+            depo:0
+          }
+          c[i] = {
+            date: timenow(rep[i].date),
+            high: rep[i].high,
+            low: rep[i].low,
+            open: rep[i].open,
+            close: rep[i].close,
+            volume: rep[i].volume,
+            volumeavg:NaN,
+            volumeunavg: NaN,
+            volumes:0,
+            volumefif:0,
+            avg: 0,
+            avgfif: 0,
+            avgolden: NaN,
+            avot: 0,
+            avgdead: NaN,
+            avgright: NaN,
+            avgunright: NaN,
+            hammer:NaN,
+            hanger:NaN,
+            golpo:0,
+            depo:0
+          }
+          //망치형 교수형 캔들
+          if(a[i].close - a[i].open > 0 && a[i].high == a[i].close && a[i].open - a[i].low > (a[i].close - a[i].open)*2 && a[i].open > a[i-1].open && (a[i].avgfif - a[i-2].avgfif)/3 > avglen && hammerd) {
+            a[i].hammer=a[i].close
+            if(money!=0) {
+              ethbuy(0.2);
+            }
+          }
+          else if(a[i].close - a[i].open < 0 && a[i].open == a[i].high && a[i].close > a[i].low && hangerd) {
+            a[i].hanger=a[i].close
+            if(ethcoin!=0) {
+              ethsell(0.2)
+            }
+          }
+          if(b[i].close - b[i].open > 0 && b[i].high == b[i].close && b[i].open - b[i].low > (b[i].close - b[i].open)*2 && b[i].open > b[i-1].open && (b[i].avgfif - b[i-2].avgfif)/3 > avglen && hammerd) {
+            b[i].hammer=b[i].close
+            if(money!=0) {
+              ltcbuy(0.2);
+            }
+          }
+          else if(b[i].close - b[i].open < 0 && b[i].open == b[i].high && b[i].close > b[i].low && hangerd) {
+            b[i].hanger=b[i].close
+            if(ltccoin!=0) {
+              ltcsell(0.2)
+            }
+          }
+          if(c[i].close - c[i].open > 0 && c[i].high == c[i].close && c[i].open - c[i].low > (c[i].close - c[i].open)*2 && c[i].open > c[i-1].open && (c[i].avgfif - c[i-2].avgfif)/3 > avglen && hammerd) {
+            c[i].hammer=c[i].close
+            if(money!=0) {
+              repbuy(0.2);
+            }
+          }
+          else if(c[i].close - c[i].open < 0 && c[i].open == c[i].high && c[i].close > c[i].low && hangerd) {
+            c[i].hanger=c[i].close
+            if(repcoin!=0) {
+              repsell(0.2)
+            }
+          }
+          //거래량 골든, 데드크로스
+          if(i > volumeles && (volumed || unvolumed)) {
+            for(var x = 0; x < volumeles; x++) {
+              a[i].volumes += a[i - x].volume
+              b[i].volumes += ltc[i - x].volume
+              c[i].volumes += rep[i - x].volume
+            }
+            a[i].volumes /= volumeles
+            b[i].volumes /= volumeles
+            c[i].volumes /= volumeles
+            if(i > volumelem && (volumed || unvolumed)) {
+              for(var z = 0; z < volumelem; z++) {
+                a[i].volumefif += eth[i - z].volume
+                b[i].volumefif += ltc[i - z].volume
+                c[i].volumefif += rep[i - z].volume
+              }
+              a[i].volumefif /= volumelem
+              b[i].volumefif /= volumelem
+              c[i].volumefif /= volumelem
+              if(a[i].volumes > a[i].volumefif && a[i-1].volumes < a[i-1].volumefif && (a[i].avgfif - a[i-2].avgfif)/3 > avglen && volumed) {
+                if(money!=0) {
+                  a[i].volumeavg = a[i].volumes
+                  ethbuy(0.2)
+                }
+              }
+              else if(a[i].volumes < a[i].volumefif && a[i-1].volumes > a[i-1].volumefif && unvolumed) {
+                if(ethcoin!=0){
+                  a[i].volumeunavg = a[i].volumes
+                  ethsell(0.2)
+                }
+              }
+              if(b[i].volumes > b[i].volumefif && b[i-1].volumes < b[i-1].volumefif && (b[i].avgfif - b[i-2].avgfif)/3 > avglen && volumed) {
+                if(money!=0) {
+                  b[i].volumeavg = b[i].volumes
+                  ltcbuy(0.2)
+                }
+              }
+              else if(b[i].volumes < b[i].volumefif && b[i-1].volumes > b[i-1].volumefif && unvolumed) {
+                if(ltccoin!=0){
+                  b[i].volumeunavg = b[i].volumes
+                  ltcsell(0.2)
+                }
+              }
+              if(c[i].volumes > c[i].volumefif && c[i-1].volumes < c[i-1].volumefif && (c[i].avgfif - c[i-2].avgfif)/3 > avglen && volumed) {
+                if(money!=0) {
+                  c[i].volumeavg = c[i].volumes
+                  repbuy(0.2)
+                }
+              }
+              else if(c[i].volumes < c[i].volumefif && c[i-1].volumes > c[i-1].volumefif && unvolumed) {
+                if(repcoin!=0){
+                  c[i].volumeunavg = c[i].volumes
+                  repsell(0.2)
+                }
+              }
+            }
+          }
+          if (i > savg) {
+            for (var z = 0; z < savg /*단기평균선 일수*/; z++) {
+              a[i].avg += eth[i - z].close
+              b[i].avg += ltc[i - z].close
+              c[i].avg += rep[i - z].close
+            }
+            a[i].avg /= savg
+            b[i].avg /= savg
+            c[i].avg /= savg
+            if (i > mhavg) {
+              for (var j = 0; j < mhavg; j++) {
+                a[i].avgfif += eth[i - j].close
+                b[i].avgfif += ltc[i - j].close;
+                c[i].avgfif += rep[i - j].close
+              }
+              a[i].avgfif /= mhavg;
+              b[i].avgfif /= mhavg;
+              c[i].avgfif /= mhavg;
+            }
+            if (i > lavg) {
+              for (var z = 0; z < lavg; z++) {
+                a[i].avot += eth[i - z].close;
+                b[i].avot += ltc[i - z].close;
+                c[i].avot += rep[i - z].close;
+              }
+              a[i].avot /= lavg
+              b[i].avot /= lavg
+              c[i].avot /= lavg
+              //정배열, 역배열 기준 정하기
+              if (a[i].avg > a[i].avgfif && a[i].avgfif > a[i].avot) {
+                if(riched) {
+                  a[i].avgright = a[i].avgfif;
+                }
+              }
+              if (b[i].avg > b[i].avgfif && b[i].avgfif > b[i].avot) {
+                if(riched) {
+                  b[i].avgright = b[i].avgfif;
+                }
+              }
+              if (c[i].avg > c[i].avgfif && c[i].avgfif > c[i].avot) {
+                if(riched) {
+                  c[i].avgright = c[i].avgfif;
+                }
+              }
+              if (a[i].avg < a[i].avgfif && a[i].avgfif < a[i].avot) {
+                if(unriched){
+                  a[i].avgunright = a[i].avgfif;
+                }
+              }
+              if (b[i].avg < b[i].avgfif && b[i].avgfif < b[i].avot) {
+                if(unriched){
+                  b[i].avgunright = b[i].avgfif;
+                }
+              }
+              if (c[i].avg < c[i].avgfif && c[i].avgfif < c[i].avot) {
+                if(unriched){
+                  c[i].avgunright = c[i].avgfif;
+                }
+              }
+              if (a[i - 1].avg/*전날의 단기이평선*/ - a[i - 1].avgfif /*중기이평선*/ < 0 && a[i].avg/*오늘의 단기이평선*/ - a[i].avgfif > 0) {
+                a[i].avgolden = a[i].avgfif
+              }//이더리움 차트에서 골든크로스 발생 여부 확인
+              else if (a[i - 1].avg - a[i - 1].avgfif > 0 && a[i].avg - a[i].avgfif < 0) {
+                a[i].avgdead = a[i].avgfif
+              }//이더리움 차트에서 데드크로스 발생 여부 확인
+              if (b[i - 1].avg - b[i - 1].avgfif < 0 && b[i].avg - b[i].avgfif > 0) {
+                b[i].avgolden = b[i].avgfif
+              }//라이트코인 차트에서 골든크로스 발생 여부 확인
+              else if (b[i - 1].avg - b[i - 1].avgfif > 0 && b[i].avg - b[i].avgfif < 0) {
+                b[i].avgdead = b[i].avgfif
+              }//라이트코인 차트에서 데드크로스 발생 여부 확인
+              if (c[i - 1].avg - c[i - 1].avgfif < 0 && c[i].avg - c[i].avgfif > 0) {
+                c[i].avgolden = c[i].avgfif
+              }//라이트코인 차트에서 골든크로스 발생 여부 확인
+              else if (c[i - 1].avg - c[i - 1].avgfif > 0 && c[i].avg - c[i].avgfif < 0) {
+                c[i].avgdead = c[i].avgfif
+              } //라이트코인 차트에서 데드크로스 발생 여부 확인
+            }
+            if (!(isNaN(a[i].avgdead)) && deched) {
+              a[i].depo+=0.4
+              if(unriched && !(isNaN(a[i].avgunright))) {
+                a[i].depo+=0.35
+              }
+              if(a[i].volume < a[i].volumeavg && a[i].volume < a[i].volumefif) {
+                a[i].depo+=0.25
+              }
+              if (ethcoin != 0) {
+                ethsell(a[i].depo)
+              }
+            }
+            if (!(isNaN(b[i].avgdead)) && deched) {
+              b[i].depo+=0.4
+              if(unriched && !(isNaN(b[i].avgunright))) {
+                b[i].depo+=0.35
+              }
+              if(b[i].volume < b[i].volumeavg && b[i].volume < b[i].volumefif) {
+                b[i].depo+=0.25
+              }
+              if (ltccoin != 0) {
+                ltcsell(b[i].depo)
+              }
+            }
+            if (!(isNaN(c[i].avgdead)) && deched) {
+              c[i].depo+=0.4
+              if(unriched && !(isNaN(c[i].avgunright))) {
+                c[i].depo+=0.35
+              }
+              if(c[i].volume < c[i].volumeavg && c[i].volume < c[i].volumefif) {
+                c[i].depo+=0.25
+              }
+              if (repcoin != 0) {
+                repsell(c[i].depo)
+              }
+            }
+            if (!(isNaN(a[i].avgolden)) && goched && (a[i].avgfif - a[i-2].avgfif)/3 > avglen) {
+              a[i].golpo+=0.4
+              if(riched && !(isNaN(a[i].avgright))) {
+                a[i].golpo+=0.35
+              }
+              if(a[i].volume > a[i].volumeavg && a[i].volume > a[i].volumefif) {
+                a[i].golpo+=0.25
+              }
+              if(money!=0) {
+                ethbuy(a[i].golpo);
+              }
+            }
+            if (!(isNaN(b[i].avgolden)) && goched && (b[i].avgfif - b[i-2].avgfif)/3 > avglen) {
+              b[i].golpo+=0.4
+              if(riched && !(isNaN(b[i].avgright))) {
+                b[i].golpo+=0.35
+              }
+              if(b[i].volume > b[i].volumeavg && b[i].volume > b[i].volumefif) {
+                b[i].golpo+=0.25
+              }
+              if(money!=0) {
+                ltcbuy(b[i].golpo);
+              }
+            }
+            if (!(isNaN(c[i].avgolden)) && goched && (c[i].avgfif - c[i-2].avgfif)/3 > avglen) {
+              c[i].golpo+=0.4
+              if(riched && !(isNaN(c[i].avgright))) {
+                c[i].golpo+=0.35
+              }
+              if(c[i].volume > c[i].volumeavg && c[i].volume > c[i].volumefif) {
+                c[i].golpo+=0.25
+              }
+              if(money!=0) {
+                repbuy(c[i].golpo);
+              }
+            }
+          }
+        }
+        chart.addListener('dataUpdated', function() {
+          chart.periodSelector.periods["0"].button.click()
+        })
+        chart2.addListener('dataUpdated', function() {
+          chart2.periodSelector.periods["0"].button.click()
+        })
+        chart3.addListener('dataUpdated', function() {
+          chart3.periodSelector.periods["0"].button.click()
+        })
+
+        // 데이터 반영을 위해 꼭 써야한다
+        chart.validateData() //이더리움 차트에 데이터 반영
+        chart2.validateData() //라이트코인 차트에 데이터 반영
+        chart3.validateData() //어거코인 차트에 데이터 반영
+        document.getElementsByClassName("firstmoney")[0].innerHTML=(firstmoney.toLocaleString()+"&#8361") //초기자금 칸에 초기자금 액수를 넣어준다
+        document.getElementsByClassName("gottenmoney")[0].innerHTML=(Math.round(pricenum[k-1]).toLocaleString())+"&#8361"; //최종수익 칸에 최종수익을 넣어준다
+        document.getElementsByClassName("percent")[0].innerHTML=(((pricenum[k-1] - 10000)/10000)*100).toLocaleString()+"%"; //수익률 칸에 수익률을 넣어준다
+        document.getElementById("chart").style.visibility="visible"
+      }
+      var eth=[];
+      var ltc=[];
+      var rep=[];
+      var money;
+      $.get("https://poloniex.com/public?command=returnChartData&currencyPair=BTC_LTC&start=1476489600&end=9999999999&period=14400", function(ltcdata, status) {
+          $.get("https://poloniex.com/public?command=returnChartData&currencyPair=BTC_ETH&start=1476489600&end=9999999999&period=14400", function(ethdata, status) {
+            $.get("https://poloniex.com/public?command=returnChartData&currencyPair=BTC_REP&start=1476489600&end=9999999999&period=14400", function(repdata, status) {
+                ltc = ltcdata;
+                eth = ethdata;
+                rep = repdata;
+                var tbody = document.getElementsByTagName("tbody")[0];
+                var ethcoin = 0;
+                var ltccoin = 0;
+                var repcoin = 0;
+                money = 10000;
+                var pricenum=[] //구매, 판매시에 보유한 금액을 저장하는 배열
+                trnum = 1
+                var k=0
+
+                //변경사항 적용후 새로고침
+                for (var i = 0; i < rep.length; i++) {
+                  a[i] = {
+                    date: timenow(eth[i].date),
+                    high: eth[i].high,
+                    low: eth[i].low,
+                    open: eth[i].open,
+                    close: eth[i].close,
+                    volume: eth[i].volume
+                  }
+                  b[i] = {
+                    date: timenow(ltc[i].date),
+                    high: ltc[i].high,
+                    low: ltc[i].low,
+                    open: ltc[i].open,
+                    close: ltc[i].close,
+                    volume: ltc[i].volume
+                  }
+                  c[i] = {
+                    date: timenow(rep[i].date),
+                    high: rep[i].high,
+                    low: rep[i].low,
+                    open: rep[i].open,
+                    close: rep[i].close,
+                    volume: rep[i].volume
+                  }
+                }
+                chart.validateData()
+                chart2.validateData()
+                chart3.validateData()
+                chart3.addListener('drawn', endload)
+              })
+          })
+      })
+      var chart = AmCharts.makeChart("chart1", {
+        "type": "stock",
+        "theme": "light",
+        "dataDateFormat": "YYYY-MM-DD HH",
+        "dataSets": [ {
+          "fieldMappings": [ {
+            "fromField": "open",
+            "toField": "open"
+          }, {
+            "fromField": "close",
+            "toField": "close"
+          }, {
+            "fromField": "high",
+            "toField": "high"
+          }, {
+            "fromField": "low",
+            "toField": "low"
+          }, {
+            "fromField": "volume",
+            "toField": "volume"
+          }, {
+            "fromField": "close",
+            "toField": "value"
+          }, {
+            "fromField":"avgolden",
+            "toField":"avgolden"
+          }, {
+            "fromField":"avgdead",
+            "toField":"avgdead"
+          }, {
+            "fromField":"avg",
+            "toField":"avg"
+          }, {
+            "fromField":"avgfif",
+            "toField":"avgfif"
+          }, {
+            "fromField":"avot",
+            "toField":"avot"
+          }, {
+            "fromField":"avgright",
+            "toField":"avgright"
+          }, {
+            "fromField":"avgunright",
+            "toField":"avgunright"
+          }, {
+            "fromField":"volumes",
+            "toField":"volumes"
+          },{
+            "fromField":"volumefif",
+            "toField":"volumefif"
+          }, {
+            "fromField":"volumeavg",
+            "toField":"volumeavg"
+          }, {
+            "fromField":"volumeunavg",
+            "toField":"volumeunavg"
+          }, {
+            "fromField":"hammer",
+            "toField":"hammer"
+          }, {
+            "fromField":"hanger",
+            "toField":"hanger"
+          }
+          ],
+          "color": "#7f8da9",
+          "dataProvider": a,
+          "title": "Eth coin",
+          "categoryField": "date",
+          "showInCompare":false
+        }],
+        "panelsSettings": [{
+          "minSelectedTime": 432000000,
+          "maxSelectedTime": 12552000000
+        }],
+        "categoryAxesSettings":{
+          "minPeriod":"4hh",
+          "markPeriodChange":false,
+          "maxSeries":1000
+        },
+        "panels": [ {
+            "title": "이더리움",
+            "showCategoryAxis": false,
+            "percentHeight": 90,
+            "valueAxes": [ {
+              "position": "left",
+              "id": "v1",
+              "gridCount":"5",
+              "dashLength": 5
+            } ],
+
+            "stockGraphs": [ {
+              "balloonText": "시가:<b>[[open]]</b><br>저가:<b>[[low]]</b><br>고가:<b>[[high]]</b><br>종가:<b>[[close]]</b><br>",
+              "type": "candlestick",
+              "id": "g1",
+              "openField": "open",
+              "closeField": "close",
+              "highField": "high",
+              "lowField": "low",
+              "valueField": "close",
+              "lineColor": "#f70000",
+              "fillColors": "#f70000",
+              "negativeLineColor": "#7f8da9",
+              "negativeFillColors": "#7f8da9",
+              "fillAlphas": 1,
+              "useDataSetColors": false,
+              "comparable": true,
+              "compareField": "value",
+              "compareFromStart":true,
+              "showBalloon": true,
+              "proCandlesticks": true
+            },
+            {
+              "title":"골든크로스",
+              "id":"g2",
+              "valueField":"avgolden",
+              "lineThickness": 0,
+              "bullet": "round",
+              "bulletSize": 6,
+              "balloonText": "골든크로스",
+              "bulletBorderAlpha": 0,
+              "bulletColor": "#f70000",
+              "color":"#f70000",
+              "fillColors": "#f70000",
+              "useLineColorForBulletBorder": false,
+              "useDataSetColors": false,
+              "comparable": true,
+              "showBalloon": true,
+              "proCandlesticks": true,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1
+            },
+            {
+              "title":"데드크로스",
+              "id":"g3",
+              "valueField":"avgdead",
+              "lineThickness": 0,
+              "bullet": "round",
+              "bulletSize": 6,
+              "balloonText": "데드크로스",
+              "bulletBorderAlpha": 0,
+              "bulletColor": "#7f8da9",
+              "color":"#7f8da9",
+              "lineColor": "#7f8da9",
+              "fillColors": "#7f8da9",
+              "useLineColorForBulletBorder": true,
+              "useDataSetColors": false,
+              "comparable": true,
+              "showBalloon": true,
+              "proCandlesticks": true,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "dashLengthField": "dashLengthLine"
+            },
+            {
+              "id": "g4",
+              "lineThickness": 1,
+              "lineColor":"#8cc63f",
+              "balloonText": "단기 이동평균선",
+              "showBalloon":false,
+              "bulletBorderAlpha": 0,
+              "bulletColor": "#d0d62a",
+              "useLineColorForBulletBorder": true,
+              "useDataSetColors": false,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "title": "단기 이동평균선",
+              "valueField": "avg",
+              "dashLengthField": "dashLengthLine"
+            },
+            {
+              "id": "g5",
+              "lineThickness": 1,
+              "lineColor":"#d1232a",
+              "balloonText": "중기 이동평균선",
+              "showBalloon":false,
+              "bulletBorderAlpha": 0,
+              "bulletColor": "#94be7a",
+              "useLineColorForBulletBorder": true,
+              "useDataSetColors": false,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "title": "중기 이동평균선",
+              "valueField": "avgfif",
+              "dashLengthField": "dashLengthLine"
+            },
+            {
+              "id": "g6",
+              "lineThickness": 1,
+              "lineColor":"#0079c2",
+              "balloonText": "장기 이동평균선",
+              "showBalloon":false,
+              "bulletBorderAlpha": 0,
+              "bulletColor": "#0079c2",
+              "useLineColorForBulletBorder": true,
+              "useDataSetColors": false,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "title": "장기 이동평균선",
+              "valueField": "avot",
+              "dashLengthField": "dashLengthLine"
+            },
+            {
+              "id": "graph7",
+              "lineThickness": 0,
+              "bullet": "custom",
+              "balloonText": "정배열",
+              "bulletSize": 10000,
+              "bulletBorderAlpha": 0,
+              "bulletColor": "#2d962a",
+              "useLineColorForBulletBorder": true,
+              "useDataSetColors": false,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "title": "정배열",
+              "valueField": "avgright",
+              "dashLengthField": "dashLengthLine"
+            },
+            {
+              "id": "graph8",
+              "lineThickness": 0,
+              "bullet": "custom",
+              "bulletSize": 10000,
+              "balloonText": "역배열",
+              "bulletBorderAlpha": 0,
+              "bulletColor": "#702a96",
+              "useLineColorForBulletBorder": true,
+              "useDataSetColors": false,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "title": "역배열",
+              "valueField": "avgunright",
+              "dashLengthField": "dashLengthLine"
+            },  {
+                "id": "graph9",
+                "lineThickness": 0,
+                "bullet": "round",
+                "balloonText": "망치형 캔들",
+                "bulletSize": 6,
+                "bulletBorderAlpha": 0,
+                "bulletColor": "#2d962a",
+                "useLineColorForBulletBorder": true,
+                "useDataSetColors": false,
+                "bulletBorderThickness": 1,
+                "fillAlphas": 0,
+                "lineAlpha": 1,
+                "title": "망치형 캔들",
+                "valueField": "hammer",
+                "dashLengthField": "dashLengthLine"
+              } ,  {
+                  "id": "graph10",
+                  "lineThickness": 0,
+                  "bullet": "round",
+                  "balloonText": "교수형 캔들",
+                  "bulletSize": 6,
+                  "bulletBorderAlpha": 0,
+                  "bulletColor": "#2d962a",
+                  "useLineColorForBulletBorder": true,
+                  "useDataSetColors": false,
+                  "bulletBorderThickness": 1,
+                  "fillAlphas": 0,
+                  "lineAlpha": 1,
+                  "title": "교수형 캔들",
+                  "valueField": "hanger",
+                  "dashLengthField": "dashLengthLine"
+                }
+           ],
+            "stockLegend": {
+              "valueWidth":100,
+              "valueTextRegular": " ",
+              "labelText":"[[title]]",
+              "periodValueTextRegular": " ",
+              "periodValueTextComparing":""
+            }
+          },
+
+          {
+            "title": "거래량",
+            "percentHeight": 50,
+            "minSelectedTime": 432000000,
+            "maxSelectedTime": 12552000000,
+            "marginTop": 0.1,
+            "showCategoryAxis": true,
+            "valueAxes": [ {
+              "dashLength": 5
+            } ],
+
+            "stockGraphs": [ {
+              "valueField": "volume",
+              "lineColor": "#382c6a",
+              "fillColors": "#382c6a",
+              "negativeLineColor": "#382c6a",
+              "negativeFillColors": "#382c6a",
+              "type": "column",
+              "showBalloon": true,
+              "fillAlphas": 1
+            }, {
+              "id": "gg1",
+              "lineThickness": 2,
+              "balloonText": "단기 이동평균선",
+              "showBalloon":false,
+              "type": "line",
+              "bulletBorderAlpha": 0,
+              "lineColor":"#8cc63f",
+              "useLineColorForBulletBorder": true,
+              "useDataSetColors": false,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "title": "단기 이동평균선",
+              "valueField": "volumes",
+              "dashLengthField": "dashLengthLine"
+            }, {
+              "id": "gg2",
+              "lineThickness": 2,
+              "balloonText": "장기 이동평균선",
+              "showBalloon":false,
+              "bulletBorderAlpha": 0,
+              "lineColor":"#354873",
+              "bulletColor": "#354873",
+              "color":"#354873",
+              "fillColors": "#354873",
+              "useLineColorForBulletBorder": true,
+              "useDataSetColors": false,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "title": "장기 이동평균선",
+              "valueField": "volumefif",
+              "dashLengthField": "dashLengthLine"
+            },{
+              "id": "gg3",
+              "lineThickness": 0,
+              "bullet": "round",
+              "balloonText": "Volume 골든크로스",
+              "bulletBorderAlpha": 0,
+              "bulletColor": "#2d962a",
+              "color":"#2d962a",
+              "fillColors": "#2d962a",
+              "useLineColorForBulletBorder": false,
+              "useDataSetColors": false,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "title": "Volume 골든크로스",
+              "valueField": "volumeavg",
+              "dashLengthField": "dashLengthLine"
+            },{
+              "id": "gg4",
+              "lineThickness": 0,
+              "bullet": "round",
+              "balloonText": "Volume 데드크로스",
+              "bulletBorderAlpha": 0,
+              "bulletColor": "#cd82ad",
+              "useLineColorForBulletBorder": true,
+              "useDataSetColors": false,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "title": "Volume 데드크로스",
+              "valueField": "volumeunavg",
+              "dashLengthField": "dashLengthLine"
+            }],
+
+            "stockLegend": {
+              "valueWidth":100,
+              "labelText": "[[title]]",
+              "valueTextRegular": " ",
+              "periodValueTextRegular": " "
+            }
+          }
+        ],
+
+        "chartScrollbarSettings": {
+          "graph": "g1",
+          "minSelectedTime": 432000000,
+          "maxSelectedTime": 12552000000,
+          "graphType": "line",
+          "usePeriod": "WW"
+        },
+        "categoryField": "date",
+        "categoryAxis": {
+          "parseDates": true,
+          "minPeriod": "4hh",
+          "dashLength": 5
+        },
+
+        "chartCursorSettings": {
+          "valueLineBalloonEnabled": true,
+          "valueBalloonsEnabled": true,
+          "valueLineEnabled": true
+        },
+        "periodSelector": {
+          "position": "bottom",
+          "periods": [{
+            "period": "DD",
+            "count": 10,
+            "label": "10 days"
+          }, {
+            "period": "MM",
+            "count": 1,
+            "label": "1 month"
+          }, {
+            "period": "YYYY",
+            "count": 1,
+            "label": "1 year"
+          }, {
+            "period": "YTD",
+            "label": "YTD"
+          }]
+        },
+        "export": {
+          "enabled": false
+        },
+        "zoomControl": {
+      		"zoomControlEnabled": true
+      	},
+      });
+    var chart2 = AmCharts.makeChart("chart2", {
+      "type": "stock",
+      "theme": "light",
+      "dataDateFormat": "YYYY-MM-DD HH",
+      "dataSets": [ {
+        "fieldMappings": [ {
+          "fromField": "open",
+          "toField": "open"
+        }, {
+          "fromField": "close",
+          "toField": "close"
+        }, {
+          "fromField": "high",
+          "toField": "high"
+        }, {
+          "fromField": "low",
+          "toField": "low"
+        }, {
+          "fromField": "volume",
+          "toField": "volume"
+        }, {
+          "fromField": "close",
+          "toField": "value"
+        }, {
+          "fromField":"avgolden",
+          "toField":"avgolden"
+        }, {
+          "fromField":"avgdead",
+          "toField":"avgdead"
+        }, {
+          "fromField":"avg",
+          "toField":"avg"
+        }, {
+          "fromField":"avgfif",
+          "toField":"avgfif"
+        }, {
+          "fromField":"avot",
+          "toField":"avot"
+        }, {
+          "fromField":"avgright",
+          "toField":"avgright"
+        }, {
+          "fromField":"avgunright",
+          "toField":"avgunright"
+        }, {
+          "fromField":"volumes",
+          "toField":"volumes"
+        },{
+          "fromField":"volumefif",
+          "toField":"volumefif"
+        }, {
+          "fromField":"volumeavg",
+          "toField":"volumeavg"
+        }, {
+          "fromField":"volumeunavg",
+          "toField":"volumeunavg"
+        }, {
+          "fromField":"hammer",
+          "toField":"hammer"
+        }, {
+          "fromField":"hanger",
+          "toField":"hanger"
+        }
+        ],
+        "color": "#7f8da9",
+        "dataProvider": b,
+        "title": "Ltc coin",
+        "categoryField": "date",
+        "showInCompare":false
+      }],
+      "panelsSettings": [{
+        "minSelectedTime": 432000000,
+        "maxSelectedTime": 12552000000
+      }],
+      "categoryAxesSettings":{
+        "markPeriodChange":false,
+        "minPeriod":"4hh",
+        "maxSeries":1000
+      },
+      "panels": [ {
+          "title": "라이트 코인",
+          "showCategoryAxis": false,
+          "minSelectedTime": 432000000,
+          "maxSelectedTime": 12552000000,
+          "percentHeight": 90,
+          "valueAxes": [ {
+            "position": "left",
+            "id": "v1",
+            "gridCount":"5",
+            "dashLength": 5
+          } ],
+          "stockGraphs": [ {
+            "balloonText": "시가:<b>[[open]]</b><br>저가:<b>[[low]]</b><br>고가:<b>[[high]]</b><br>종가:<b>[[close]]</b><br>",
+            "type": "candlestick",
+            "id": "g1",
+            "openField": "open",
+            "closeField": "close",
+            "highField": "high",
+            "lowField": "low",
+            "valueField": "close",
+            "lineColor": "#f70000",
+            "fillColors": "#f70000",
+            "negativeLineColor": "#7f8da9",
+            "negativeFillColors": "#7f8da9",
+            "fillAlphas": 1,
+            "useDataSetColors": false,
+            "comparable": true,
+            "compareField": "value",
+            "compareFromStart":true,
+            "showBalloon": true,
+            "proCandlesticks": true
+          },
+          {
+            "title":"골든크로스",
+            "id":"g2",
+            "valueField":"avgolden",
+            "lineThickness": 0,
+            "bullet": "round",
+            "bulletSize": 6,
+            "balloonText": "골든크로스",
+            "bulletBorderAlpha": 0,
+            "bulletColor": "#f70000",
+            "color":"#f70000",
+            "fillColors": "#f70000",
+            "useLineColorForBulletBorder": false,
+            "useDataSetColors": false,
+            "comparable": true,
+            "showBalloon": true,
+            "proCandlesticks": true,
+            "bulletBorderThickness": 1,
+            "fillAlphas": 0,
+            "lineAlpha": 1,
+            "title": "골든크로스",
+          },
+          {
+            "title":"데드크로스",
+            "id":"g3",
+            "valueField":"avgdead",
+            "lineThickness": 0,
+            "bullet": "round",
+            "bulletSize": 6,
+            "balloonText": "데드크로스",
+            "bulletBorderAlpha": 0,
+            "bulletColor": "#7f8da9",
+            "color":"#cd7f32",
+            "lineColor": "#cd7f32",
+            "fillColors": "#cd7f32",
+            "useLineColorForBulletBorder": false,
+            "useDataSetColors": false,
+            "comparable": true,
+            "showBalloon": true,
+            "proCandlesticks": true,
+            "bulletBorderThickness": 1,
+            "fillAlphas": 0,
+            "lineAlpha": 1,
+            "dashLengthField": "dashLengthLine"
+          },
+          {
+            "id": "g4",
+            "lineThickness": 1,
+            "lineColor":"#8cc63f",
+            "balloonText": "단기 이동평균선",
+            "showBalloon":false,
+            "bulletBorderAlpha": 0,
+            "bulletColor": "#d0d62a",
+            "useLineColorForBulletBorder": true,
+            "useDataSetColors": false,
+            "bulletBorderThickness": 1,
+            "fillAlphas": 0,
+            "lineAlpha": 1,
+            "title": "단기 이동평균선",
+            "valueField": "avg",
+            "dashLengthField": "dashLengthLine"
+          },
+          {
+            "id": "g5",
+            "lineThickness": 1,
+            "lineColor":"#d1232a",
+            "balloonText": "중기 이동평균선",
+            "showBalloon":false,
+            "bulletBorderAlpha": 0,
+            "bulletColor": "#94be7a",
+            "useLineColorForBulletBorder": true,
+            "useDataSetColors": false,
+            "bulletBorderThickness": 1,
+            "fillAlphas": 0,
+            "lineAlpha": 1,
+            "title": "중기 이동평균선",
+            "valueField": "avgfif",
+            "dashLengthField": "dashLengthLine"
+          },
+          {
+            "id": "g6",
+            "lineThickness": 1,
+            "lineColor":"#0079c2",
+            "balloonText": "장기 이동평균선",
+            "showBalloon":false,
+            "bulletBorderAlpha": 0,
+            "bulletColor": "#0079c2",
+            "useLineColorForBulletBorder": true,
+            "useDataSetColors": false,
+            "bulletBorderThickness": 1,
+            "fillAlphas": 0,
+            "lineAlpha": 1,
+            "title": "장기 이동평균선",
+            "valueField": "avot",
+            "dashLengthField": "dashLengthLine"
+          },
+          {
+            "id": "graph7",
+            "lineThickness": 0,
+            "bullet": "custom",
+            "balloonText": "정배열",
+            "bulletSize": 2,
+            "bulletBorderAlpha": 0,
+            "bulletColor": "#2d962a",
+            "useLineColorForBulletBorder": true,
+            "useDataSetColors": false,
+            "bulletBorderThickness": 1,
+            "fillAlphas": 0,
+            "lineAlpha": 1,
+            "title": "정배열",
+            "valueField": "avgright",
+            "dashLengthField": "dashLengthLine"
+          },
+          {
+            "id": "graph8",
+            "lineThickness": 0,
+            "bullet": "custom",
+            "bulletSize": 2,
+            "balloonText": "역배열",
+            "bulletBorderAlpha": 0,
+            "bulletColor": "#702a96",
+            "useLineColorForBulletBorder": true,
+            "useDataSetColors": false,
+            "bulletBorderThickness": 1,
+            "fillAlphas": 0,
+            "lineAlpha": 1,
+            "title": "역배열",
+            "valueField": "avgunright",
+            "dashLengthField": "dashLengthLine"
+          },  {
+              "id": "graph9",
+              "lineThickness": 0,
+              "bullet": "round",
+              "balloonText": "망치형 캔들",
+              "bulletSize": 6,
+              "bulletBorderAlpha": 0,
+              "bulletColor": "#2d962a",
+              "useLineColorForBulletBorder": true,
+              "useDataSetColors": false,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "title": "망치형 캔들",
+              "valueField": "hammer",
+              "dashLengthField": "dashLengthLine"
+            }
+            ,  {
+                "id": "graph10",
+                "lineThickness": 0,
+                "bullet": "round",
+                "balloonText": "교수형 캔들",
+                "bulletSize": 6,
+                "bulletBorderAlpha": 0,
+                "bulletColor": "#2d962a",
+                "useLineColorForBulletBorder": true,
+                "useDataSetColors": false,
+                "bulletBorderThickness": 1,
+                "fillAlphas": 0,
+                "lineAlpha": 1,
+                "title": "교수형 캔들",
+                "valueField": "hanger",
+                "dashLengthField": "dashLengthLine"
+              }
+
+         ],
+
+         "stockLegend": {
+           "valueWidth":100,
+           "valueTextRegular": " ",
+           "labelText":"[[title]]",
+           "periodValueTextRegular": " ",
+           "periodValueTextComparing":""
+         }
+        },
+
+        {
+          "title": "거래량",
+          "percentHeight": 50,
+          "marginTop": 0.1,
+          "showCategoryAxis": true,
+          "valueAxes": [ {
+            "dashLength": 5
+          } ],
+          "minSelectedTime": 432000000,
+          "maxSelectedTime": 12552000000,
+          "stockGraphs": [ {
+            "valueField": "volume",
+            "type": "column",
+            "showBalloon": true,
+            "fillAlphas": 1
+          }, {
+            "id": "gg1",
+            "lineThickness": 2,
+            "balloonText": "단기 이동평균선",
+            "showBalloon":false,
+            "type": "line",
+            "bulletBorderAlpha": 0,
+            "lineColor":"#8cc63f",
+            "useLineColorForBulletBorder": true,
+            "useDataSetColors": false,
+            "bulletBorderThickness": 1,
+            "fillAlphas": 0,
+            "lineAlpha": 1,
+            "title": "단기 이동평균선",
+            "valueField": "volumes",
+            "dashLengthField": "dashLengthLine"
+          }, {
+            "id": "gg2",
+            "lineThickness": 2,
+            "balloonText": "장기 이동평균선",
+            "showBalloon":false,
+            "bulletBorderAlpha": 0,
+            "lineColor":"#354873",
+            "bulletColor": "#354873",
+            "color":"#354873",
+            "fillColors": "#354873",
+            "useLineColorForBulletBorder": true,
+            "useDataSetColors": false,
+            "bulletBorderThickness": 1,
+            "fillAlphas": 0,
+            "lineAlpha": 1,
+            "title": "장기 이동평균선",
+            "valueField": "volumefif",
+            "dashLengthField": "dashLengthLine"
+          },{
+            "id": "gg3",
+            "lineThickness": 0,
+            "bullet": "round",
+            "balloonText": "Volume 골든크로스",
+            "bulletBorderAlpha": 0,
+            "bulletColor": "#2d962a",
+            "color":"#2d962a",
+            "fillColors": "#2d962a",
+            "useLineColorForBulletBorder": true,
+            "useDataSetColors": false,
+            "bulletBorderThickness": 1,
+            "fillAlphas": 0,
+            "lineAlpha": 1,
+            "title": "Volume 골든크로스",
+            "valueField": "volumeavg",
+            "dashLengthField": "dashLengthLine"
+          },{
+            "id": "gg4",
+            "lineThickness": 0,
+            "bullet": "round",
+            "balloonText": "Volume 데드크로스",
+            "bulletBorderAlpha": 0,
+            "bulletColor": "#cd82ad",
+            "useLineColorForBulletBorder": true,
+            "useDataSetColors": false,
+            "bulletBorderThickness": 1,
+            "fillAlphas": 0,
+            "lineAlpha": 1,
+            "title": "Volume 데드크로스",
+            "valueField": "volumeunavg",
+            "dashLengthField": "dashLengthLine"
+          }],
+
+          "stockLegend": {
+            "valueWidth":100,
+            "marginRight":5000,
+            "labelText": "[[title]]",
+            "valueTextRegular": " ",
+            "periodValueTextRegular": " "
+          }
+        }
+      ],
+
+      "chartScrollbarSettings": {
+        "graph": "g1",
+        "graphType": "line",
+        "minSelectedTime": 432000000,
+        "maxSelectedTime": 12552000000,
+        "usePeriod": "WW"
+      },
+      "categoryField": "date",
+      "categoryAxis": {
+        "parseDates": true,
+        "minPeriod": "4hh",
+        "dashLength": 5
+      },
+
+      "chartCursorSettings": {
+        "valueLineBalloonEnabled": true,
+        "valueBalloonsEnabled": true,
+        "valueLineEnabled": true
+      },
+      "periodSelector": {
+        "position": "bottom",
+        "periods": [{
+          "period": "DD",
+          "count": 10,
+          "label": "10 days"
+        }, {
+          "period": "MM",
+          "count": 1,
+          "label": "1 month"
+        }, {
+          "period": "YYYY",
+          "count": 1,
+          "label": "1 year"
+        }, {
+          "period": "YTD",
+          "label": "YTD"
+        }]
+      },
+      "export": {
+        "enabled": false
+      },
+      "zoomControl": {
+    		"zoomControlEnabled": false
+    	}
+    });
+
+
+  var chart3 = AmCharts.makeChart( "chart3", {
+    "type": "stock",
+    "theme": "light",
+    "dataDateFormat": "YYYY-MM-DD HH",
+    "dataSets": [ {
+      "fieldMappings": [ {
+        "fromField": "open",
+        "toField": "open"
+      }, {
+        "fromField": "close",
+        "toField": "close"
+      }, {
+        "fromField": "high",
+        "toField": "high"
+      }, {
+        "fromField": "low",
+        "toField": "low"
+      }, {
+        "fromField": "volume",
+        "toField": "volume"
+      }, {
+        "fromField": "close",
+        "toField": "value"
+      }, {
+        "fromField":"avgolden",
+        "toField":"avgolden"
+      }, {
+        "fromField":"avgdead",
+        "toField":"avgdead"
+      }, {
+        "fromField":"avg",
+        "toField":"avg"
+      }, {
+        "fromField":"avgfif",
+        "toField":"avgfif"
+      }, {
+        "fromField":"avot",
+        "toField":"avot"
+      }, {
+        "fromField":"avgright",
+        "toField":"avgright"
+      }, {
+        "fromField":"avgunright",
+        "toField":"avgunright"
+      }, {
+        "fromField":"volumes",
+        "toField":"volumes"
+      },{
+        "fromField":"volumefif",
+        "toField":"volumefif"
+      }, {
+        "fromField":"volumeavg",
+        "toField":"volumeavg"
+      }, {
+        "fromField":"volumeunavg",
+        "toField":"volumeunavg"
+      }, {
+        "fromField":"hammer",
+        "toField":"hammer"
+      }, {
+        "fromField":"hanger",
+        "toField":"hanger"
+      }
+      ],
+      "color": "#7f8da9",
+      "dataProvider": c,
+      "title": "Rep coin",
+      "categoryField": "date",
+      "showInCompare":false
+    }],
+    "categoryAxesSettings":{
+      "markPeriodChange":false,
+      "minPeriod":"4hh",
+      "maxSeries":1000
+    },
+    "panelsSettings": [{
+      "minSelectedTime": 432000000,
+      "maxSelectedTime": 12552000000
+    }],
+    "panels": [ {
+        "title": "어거 코인",
+        "showCategoryAxis": false,
+        "minSelectedTime": 432000000,
+        "maxSelectedTime": 12552000000,
+        "percentHeight": 90,
+        "valueAxes": [ {
+          "position": "left",
+          "id": "v1",
+          "gridCount":"5",
+          "dashLength": 5
+        } ],
+
+        "stockGraphs": [ {
+          "balloonText": "시가:<b>[[open]]</b><br>저가:<b>[[low]]</b><br>고가:<b>[[high]]</b><br>종가:<b>[[close]]</b><br>",
+          "type": "candlestick",
+          "id": "g1",
+          "openField": "open",
+          "closeField": "close",
+          "highField": "high",
+          "lowField": "low",
+          "valueField": "close",
+          "lineColor": "#f70000",
+          "fillColors": "#f70000",
+          "negativeLineColor": "#7f8da9",
+          "negativeFillColors": "#7f8da9",
+          "fillAlphas": 1,
+          "useDataSetColors": false,
+          "comparable": true,
+          "compareField": "value",
+          "compareFromStart":true,
+          "showBalloon": true,
+          "proCandlesticks": true
+        },
+        {
+          "title":"골든크로스",
+          "id":"g2",
+          "valueField":"avgolden",
+          "lineThickness": 0,
+          "bullet": "round",
+          "bulletSize": 6,
+          "balloonText": "골든크로스",
+          "bulletBorderAlpha": 0,
+          "bulletColor": "#f70000",
+          "color":"#f70000",
+          "fillColors": "#f70000",
+          "useLineColorForBulletBorder": false,
+          "useDataSetColors": false,
+          "comparable": true,
+          "showBalloon": true,
+          "proCandlesticks": true,
+          "bulletBorderThickness": 1,
+          "fillAlphas": 0,
+          "lineAlpha": 1
+        },
+        {
+          "title":"데드크로스",
+          "id":"g3",
+          "valueField":"avgdead",
+          "lineThickness": 0,
+          "bullet": "round",
+          "bulletSize": 6,
+          "balloonText": "데드크로스",
+          "bulletBorderAlpha": 0,
+          "bulletColor": "#7f8da9",
+          "color":"#cd7f32",
+          "lineColor": "#cd7f32",
+          "fillColors": "#cd7f32",
+          "useLineColorForBulletBorder": false,
+          "useDataSetColors": false,
+          "comparable": true,
+          "showBalloon": true,
+          "proCandlesticks": true,
+          "bulletBorderThickness": 1,
+          "fillAlphas": 0,
+          "lineAlpha": 1,
+          "dashLengthField": "dashLengthLine"
+        },
+        {
+          "id": "g4",
+          "lineThickness": 1,
+          "lineColor":"#8cc63f",
+          "balloonText": "단기 이동평균선",
+          "showBalloon":false,
+          "bulletBorderAlpha": 0,
+          "bulletColor": "#d0d62a",
+          "useLineColorForBulletBorder": true,
+          "useDataSetColors": false,
+          "bulletBorderThickness": 1,
+          "fillAlphas": 0,
+          "lineAlpha": 1,
+          "title": "단기 이동평균선",
+          "valueField": "avg",
+          "dashLengthField": "dashLengthLine"
+        },
+        {
+          "id": "g5",
+          "lineThickness": 1,
+          "lineColor":"#d1232a",
+          "balloonText": "중기 이동평균선",
+          "showBalloon":false,
+          "bulletBorderAlpha": 0,
+          "bulletColor": "#94be7a",
+          "useLineColorForBulletBorder": true,
+          "useDataSetColors": false,
+          "bulletBorderThickness": 1,
+          "fillAlphas": 0,
+          "lineAlpha": 1,
+          "title": "중기 이동평균선",
+          "valueField": "avgfif",
+          "dashLengthField": "dashLengthLine"
+        },
+        {
+          "id": "g6",
+          "lineThickness": 1,
+          "lineColor":"#0079c2",
+          "balloonText": "장기 이동평균선",
+          "showBalloon":false,
+          "bulletBorderAlpha": 0,
+          "bulletColor": "#0079c2",
+          "useLineColorForBulletBorder": true,
+          "useDataSetColors": false,
+          "bulletBorderThickness": 1,
+          "fillAlphas": 0,
+          "lineAlpha": 1,
+          "title": "장기 이동평균선",
+          "valueField": "avot",
+          "dashLengthField": "dashLengthLine"
+        },
+        {
+          "id": "graph7",
+          "lineThickness": 0,
+          "bullet": "custom",
+          "balloonText": "정배열",
+          "bulletSize": 2,
+          "bulletBorderAlpha": 0,
+          "bulletColor": "#2d962a",
+          "useLineColorForBulletBorder": true,
+          "useDataSetColors": false,
+          "bulletBorderThickness": 1,
+          "fillAlphas": 0,
+          "lineAlpha": 1,
+          "title": "정배열",
+          "valueField": "avgright",
+          "dashLengthField": "dashLengthLine"
+        },
+        {
+          "id": "graph8",
+          "lineThickness": 0,
+          "bullet": "custom",
+          "bulletSize": 2,
+          "balloonText": "역배열",
+          "bulletBorderAlpha": 0,
+          "bulletColor": "#702a96",
+          "useLineColorForBulletBorder": true,
+          "useDataSetColors": false,
+          "bulletBorderThickness": 1,
+          "fillAlphas": 0,
+          "lineAlpha": 1,
+          "title": "역배열",
+          "valueField": "avgunright",
+          "dashLengthField": "dashLengthLine"
+        },  {
+            "id": "graph9",
+            "lineThickness": 0,
+            "bullet": "round",
+            "balloonText": "망치형 캔들",
+            "bulletSize": 6,
+            "bulletBorderAlpha": 0,
+            "bulletColor": "#2d962a",
+            "useLineColorForBulletBorder": true,
+            "useDataSetColors": false,
+            "bulletBorderThickness": 1,
+            "fillAlphas": 0,
+            "lineAlpha": 1,
+            "title": "망치형 캔들",
+            "valueField": "hammer",
+            "dashLengthField": "dashLengthLine"
+          }
+          ,  {
+              "id": "graph10",
+              "lineThickness": 0,
+              "bullet": "round",
+              "balloonText": "교수형 캔들",
+              "bulletSize": 6,
+              "bulletBorderAlpha": 0,
+              "bulletColor": "#2d962a",
+              "useLineColorForBulletBorder": true,
+              "useDataSetColors": false,
+              "bulletBorderThickness": 1,
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "title": "교수형 캔들",
+              "valueField": "hanger",
+              "dashLengthField": "dashLengthLine"
+            }
+
+       ],
+
+       "stockLegend": {
+         "valueWidth":100,
+         "valueTextRegular": " ",
+         "labelText":"[[title]]",
+         "periodValueTextRegular": " ",
+         "periodValueTextComparing":""
+       }
+      },
+
+      {
+        "title": "거래량",
+        "percentHeight": 50,
+        "minSelectedTime": 432000000,
+        "maxSelectedTime": 12552000000,
+        "marginTop": 0.1,
+        "showCategoryAxis": true,
+        "valueAxes": [ {
+          "dashLength": 5
+        } ],
+
+        "stockGraphs": [ {
+          "valueField": "volume",
+          "type": "column",
+          "showBalloon": true,
+          "fillAlphas": 1
+        }, {
+          "id": "gg1",
+          "lineThickness": 2,
+          "balloonText": " ",
+          "showBalloon":false,
+          "type": "line",
+          "bulletBorderAlpha": 0,
+          "lineColor":"#8cc63f",
+          "useLineColorForBulletBorder": true,
+          "useDataSetColors": false,
+          "bulletBorderThickness": 1,
+          "fillAlphas": 0,
+          "lineAlpha": 1,
+          "title": "단기 이동평균선",
+          "valueField": "volumes",
+          "dashLengthField": "dashLengthLine"
+        }, {
+          "id": "gg2",
+          "lineThickness": 2,
+          "balloonText": " ",
+          "showBalloon":false,
+          "bulletBorderAlpha": 0,
+          "lineColor":"#354873",
+          "bulletColor": "#354873",
+          "color":"#354873",
+          "fillColors": "#354873",
+          "useLineColorForBulletBorder": true,
+          "useDataSetColors": false,
+          "bulletBorderThickness": 1,
+          "fillAlphas": 0,
+          "lineAlpha": 1,
+          "title": "장기 이동평균선",
+          "valueField": "volumefif",
+          "dashLengthField": "dashLengthLine"
+        },{
+          "id": "gg3",
+          "lineThickness": 0,
+          "bullet": "round",
+          "balloonText": "Volume 골든크로스",
+          "bulletBorderAlpha": 0,
+          "bulletColor": "#2d962a",
+          "useLineColorForBulletBorder": true,
+          "useDataSetColors": false,
+          "bulletBorderThickness": 1,
+          "fillAlphas": 0,
+          "lineAlpha": 1,
+          "title": "Volume 골든크로스",
+          "valueField": "volumeavg",
+          "dashLengthField": "dashLengthLine"
+        },{
+          "id": "gg4",
+          "lineThickness": 0,
+          "bullet": "round",
+          "balloonText": "Volume 데드크로스",
+          "bulletBorderAlpha": 0,
+          "bulletColor": "#cd82ad",
+          "useLineColorForBulletBorder": true,
+          "useDataSetColors": false,
+          "bulletBorderThickness": 1,
+          "fillAlphas": 0,
+          "lineAlpha": 1,
+          "title": "Volume 데드크로스",
+          "valueField": "volumeunavg",
+          "dashLengthField": "dashLengthLine"
+        }],
+
+        "stockLegend": {
+          "valueWidth":100,
+          "marginRight":5000,
+          "labelText": "[[title]]",
+          "valueTextRegular": " ",
+          "periodValueTextRegular": " "
+        }
+      }
+    ],
+
+    "chartScrollbarSettings": {
+      "graph": "g1",
+      "graphType": "line",
+      "minSelectedTime": 432000000,
+      "maxSelectedTime": 12552000000,
+      "usePeriod": "WW"
+    },
+    "categoryField": "date",
+    "categoryAxis": {
+      "parseDates": true,
+      "minPeriod": "4hh",
+      "dashLength": 5
+    },
+
+    "chartCursorSettings": {
+      "valueLineBalloonEnabled": true,
+      "valueBalloonsEnabled": true,
+      "valueLineEnabled": true
+    },
+    "periodSelector": {
+      "position": "bottom",
+      "periods": [{
+        "period": "DD",
+        "count": 10,
+        "label": "10 days"
+      }, {
+        "period": "MM",
+        "count": 1,
+        "label": "1 month"
+      }, {
+        "period": "YYYY",
+        "count": 1,
+        "label": "1 year"
+      }, {
+        "period": "YTD",
+        "label": "YTD"
+      } ]
+    },
+    "export": {
+      "enabled": false
+    },
+    "zoomControl": {
+  		"zoomControlEnabled": false
+  	}
+  });
+  chart.addListener('dataUpdated', function() {
+    chart.scrollbarChart.minSelectedTime = 432000000*5;
+    chart.scrollbarChart.maxSelectedTime = 12552000000;
+    chart.periodSelector.periods["0"].button.click()
+  });
+  chart2.addListener('dataUpdated', function() {
+    chart2.scrollbarChart.minSelectedTime = 432000000*5;
+    chart2.scrollbarChart.maxSelectedTime = 12552000000;
+    chart2.periodSelector.periods["0"].button.click()
+  });
+  chart3.addListener('dataUpdated', function() {
+    chart3.scrollbarChart.minSelectedTime = 432000000*5;
+    chart3.scrollbarChart.maxSelectedTime = 12552000000;
+    chart3.periodSelector.periods["0"].button.click()
+  });
+  $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="popover"]').popover();
+  });
+  </script>
+  </body>
+</html>
